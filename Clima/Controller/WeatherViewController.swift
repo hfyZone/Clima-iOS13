@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import CoreLocation
 class WeatherViewController: UIViewController {
 
     @IBOutlet weak var conditionImageView: UIImageView!
@@ -16,13 +16,21 @@ class WeatherViewController: UIViewController {
     @IBOutlet weak var searchTextField: UITextField!
 
     var weatherManager = WeatherManager()
+    let locationManager = CLLocationManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        
         // 将搜索框的动态变化监听委托给viewController
         searchTextField.delegate = self
         weatherManager.delegate = self
+        locationManager.delegate = self
 
+        // 申请位置权限，同时去Info里添加项Privacy - Location When In Use Usage Description
+        locationManager.requestWhenInUseAuthorization()
+        // 要在申请位置前设置代理
+        locationManager.requestLocation()
     }
 
 }
@@ -74,4 +82,18 @@ extension WeatherViewController: WeatherManagerDelegate {
     func didFailWithError(error: Error) {
         print(error)
     }
+}
+
+//Mark: - CLLocationManagerDelegate
+extension WeatherViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let lat = location.coordinate.latitude
+            let lon = location.coordinate.longitude
+            print(lat, lon)
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+            print("定位失败：\(error.localizedDescription)")
+        }
 }
