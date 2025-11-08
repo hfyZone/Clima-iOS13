@@ -33,6 +33,9 @@ class WeatherViewController: UIViewController {
         locationManager.requestLocation()
     }
 
+    @IBAction func locationPressed(_ sender: UIButton) {
+        locationManager.requestLocation()
+    }
 }
 // MARK: - UITextFieldDelegate
 // The extension helps to organize the code
@@ -90,7 +93,7 @@ extension WeatherViewController: CLLocationManagerDelegate {
         if let location = locations.last {
             let lat = location.coordinate.latitude
             let lon = location.coordinate.longitude
-            print(lat, lon)
+            weatherManager.fetchWather(lat: lat, lon: lon)
         }
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
